@@ -12,13 +12,21 @@ class UserController extends Controller
     {
         $data = [
             'level_id' => 2,
-            'username' =>'manager_tiga',
+            'username' => 'manager_tiga',
             'nama' => 'Manager 3',
             'password' => Hash::make('1234')
         ];
-      
-        $user = UserModel::where('level_id',2)->count();
-  
+
+        $user = UserModel::firstOrNew(
+            [
+                'username' => 'manager33',
+                'nama' => 'Manager Tiga Tiga',
+                'password' => Hash::make('1234'),
+                'level_id' => 2
+
+            ],
+        );
+        $user->save();
         return view('user', ['data' => $user]);
     }
 }
