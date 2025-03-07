@@ -17,7 +17,8 @@ class UserController extends Controller
             'password' => Hash::make('1234')
         ];
       
-        $user = UserModel::where('username','manager9')->firstOrFail();
+        $user = UserModel::where('level_id',2)->count();
+  
         return view('user', ['data' => $user]);
     }
 }
