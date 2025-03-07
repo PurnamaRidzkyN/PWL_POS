@@ -16,8 +16,10 @@ class UserController extends Controller
             'nama' => 'Manager 3',
             'password' => Hash::make('1234')
         ];
-        userModel::create($data);
-        $user = UserModel::all();
+      
+        $user = UserModel::findOrFail(20,['username','nama'], function (){
+            abort(404);
+        });
         return view('user', ['data' => $user]);
     }
 }

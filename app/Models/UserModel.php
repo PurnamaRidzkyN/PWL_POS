@@ -9,7 +9,7 @@ class UserModel extends Model
 {
     use HasFactory;
     protected $table = 'm_user';
-    protected $primaKey = 'user_id';
+    protected $primaryKey = 'user_id';
 
     protected $fillable = ['level_id', 'username', 'nama'];
 }
