@@ -4,7 +4,14 @@
 <head>
     <title>Data Kategori Barang</title>
 </head>
+
 <body>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('kategori.index') }}">Manage Kategori</a>
+        </li>
+    </ul>
+
     <h1>Data Kategori Barang</h1>
     <table border="1" cellpadding="2" cellspacing="0">
         <tr>
@@ -21,4 +28,5 @@
         @endforeach
     </table>
 </body>
+
 </html>
