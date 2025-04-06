@@ -1,34 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
+@section('subtitle', 'Tambah User')
+@section('content_header_title', 'Manajemen User')
+@section('content_header_subtitle', 'Tambah Pengguna')
 
-<body>
-
-    <body>
-        <h1>Form Tambah Data User</h1>
-        <form method="post" action="/user/tambah_simpan">
-            {{ csrf_field() }}
-            <label>Username</label>
-            <input type="text" name="username" placeholder="Masukan Username">
-            <br>
-            <label>Nama</label>
-            <input type="text" name="nama" placeholder="Masukan Nama">
-            <br>
-            <label>Password</label>
-            <input type="password" name="password" placeholder="Masukan Password">
-            <br>
-            <label>Level ID</label>
-            <input type="number" name="level_id" placeholder="Masukan ID Level">
-            <br><br>
-            <input type="submit" class="btn btn-success" value="Simpan">
+@section('content')
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Form Tambah User</h3>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('user.store') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">@</span>
+                    </div>
+                    <input type="text" class="form-control" name="username" placeholder="username" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nama</label>
+                <input type="text" class="form-control" name="nama" placeholder="Nama Lengkap" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+                <label>Level</label>
+                <select class="form-control" name="level_id" required>
+                    @foreach($levels as $level)
+                        <option value="{{ $level->level_id }}">{{ $level->level_nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Simpan</button>
         </form>
-    </body>
-</body>
-
-</html>
+    </div>
+</div>
+@endsection

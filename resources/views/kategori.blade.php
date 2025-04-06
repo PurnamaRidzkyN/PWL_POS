@@ -11,7 +11,17 @@
             <a class="nav-link" href="{{ route('kategori.index') }}">Manage Kategori</a>
         </li>
     </ul>
-
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+            
+        @endforeach
+    </ul>
+</div>
+    
+@endif
     <h1>Data Kategori Barang</h1>
     <table border="1" cellpadding="2" cellspacing="0">
         <tr>
