@@ -55,11 +55,7 @@
 
 @push('js')
     <script>
-        function modalAction(url = '') {
-            $('#myModal').load(url, function() {
-                $('#myModal').modal('show');
-            });
-        }
+        c
         $(document).ready(function() {
             var dataUser = $('#table_user').DataTable({
                 // serverSide: true, jika ingin menggunakan server side processing

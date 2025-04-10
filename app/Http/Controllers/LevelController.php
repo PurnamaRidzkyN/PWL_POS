@@ -8,6 +8,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreLevelRequest;
+use Illuminate\Support\Facades\Validator;
 
 class LevelController extends Controller
 {
@@ -59,6 +60,35 @@ class LevelController extends Controller
 
         return view('level.create', compact('breadcrumb', 'page', 'activeMenu'));
     }
+
+    public function create_ajax()
+    {
+        return view('level.create_ajax');
+    }
+    public function store_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'nama_level' => 'required|string|min:3|unique:m_level,nama_level',
+                'kode_level' => 'required|string|max:10|unique:m_level,kode_level'
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Proses gagal',
+                    'msgField' => $validator->errors()->messages()
+                ]);
+            }
+            LevelModel::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Proses berhasil'
+            ]);
+        }
+        redirect('/');
+    }
+
 
     public function store(Request $request)
     {
