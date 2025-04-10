@@ -6,6 +6,8 @@
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('supplier/create') }}">Tambah Supplier</a>
+                <button onclick="modalAction('{{ url('supplier/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
+                    Ajax</button>
             </div>
         </div>
         <div class="card-body">
@@ -21,11 +23,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group row">
-                                <label class="col-1 control-label col-form-label">Filter :</label>
-                                <div class="col-4">
-                                    <input type="text" class="form-control" id="filter_nama" placeholder="Nama Supplier">
-                                    <small class="form-text text-muted">Cari berdasarkan nama</small>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -46,6 +44,8 @@
             </table>
         </div>
     </div>
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
 
 @push('css')
@@ -53,6 +53,11 @@
 
 @push('js')
     <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
+                $('#myModal').modal('show');
+            });
+        }
         $(document).ready(function() {
             var dataSupplier = $('#table_supplier').DataTable({
                 serverSide: true,
@@ -63,8 +68,7 @@
                         d.nama_supplier = $('#filter_nama').val();
                     }
                 },
-                columns: [
-                    {
+                columns: [{
                         data: "DT_RowIndex",
                         className: "text-center",
                         orderable: false,
