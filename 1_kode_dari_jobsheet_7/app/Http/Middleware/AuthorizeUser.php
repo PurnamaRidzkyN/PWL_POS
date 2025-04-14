@@ -15,7 +15,6 @@ class AuthorizeUser
      */
     public function handle(Request $request, Closure $next,$role = ''): Response
     {
-        dd($role);
         $user = $request->user();
         if ($user->hasRole($role)) {
             return $next($request);
