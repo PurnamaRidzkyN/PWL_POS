@@ -10,6 +10,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreUserRequest;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -268,18 +269,73 @@ class UserController extends Controller
         }
         redirect('/');
     }
+
+    public function import()
+    {
+        return view('user.import');
+    }
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_user' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_user');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            $insert = [];
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) {
+                        $insert[] = [
+                            'username' => $value['A'],
+                            'nama'     => $value['B'],
+                            'password' => bcrypt($value['C']), // Enkripsi password
+                            'level_id' => $value['D'],
+                            'created_at' => now()
+                        ];
+                    }
+                }
+
+                if (count($insert) > 0) {
+                    UserModel::insertOrIgnore($insert); // Abaikan jika username duplikat
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data user berhasil diimport'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            }
+        }
+
+        return redirect('/');
+    }
+    
     function tambah()
     {
         $levels = LevelModel::all();
         return view('user_tambah', compact('levels'));
     }
-    public function tambah_simpan(StoreUserRequest $request): RedirectResponse
-    {
-        $validated = $request->validated();
 
-        UserModel::create($validated);
-        return redirect('/user');
-    }
     public function ubah($id)
     {
         $user = UserModel::find($id);

@@ -37,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [UserController::class, 'store']);
             Route::get('/create_ajax', [UserController::class, 'create_ajax']);
             Route::post('/ajax', [UserController::class, 'store_ajax']);
+            Route::get('/import', [UserController::class, 'import']);
+            Route::post('/import_ajax', [UserController::class, 'import']);
             Route::get('/{id}', [UserController::class, 'show']);
             Route::get('/{id}/edit', [UserController::class, 'edit']);
             Route::put('/{id}', [UserController::class, 'update']);
@@ -55,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [LevelController::class, 'store']);
             Route::get('/create_ajax', [LevelController::class, 'create_ajax']);
             Route::post('/ajax', [LevelController::class, 'store_ajax']);
+            Route::get('/import', [LevelController::class, 'import']);
+            Route::post('/import_ajax', [LevelController::class, 'import']);
             Route::get('/{id}', [LevelController::class, 'show']);
             Route::get('/{id}/edit', [LevelController::class, 'edit']);
             Route::put('/{id}', [LevelController::class, 'update']);
@@ -73,6 +77,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [KategoriController::class, 'store']);
             Route::get('/create_ajax', [KategoriController::class, 'create_ajax']);
             Route::post('/ajax', [KategoriController::class, 'store_ajax']);
+            Route::get('/import', [KategoriController::class, 'import']);
+            Route::post('/import_ajax', [KategoriController::class, 'import_ajax']);
             Route::get('/{id}', [KategoriController::class, 'show']);
             Route::get('/{id}/edit', [KategoriController::class, 'edit']);
             Route::put('/{id}', [KategoriController::class, 'update']);
@@ -96,14 +102,16 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    Route::group(['prefix' => 'barang'], function () {
-        Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
+    Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
+        Route::group(['prefix' => 'barang'], function () {
             Route::get('/', [BarangController::class, 'index']);
             Route::post('/list', [BarangController::class, 'list']);
             Route::get('/create', [BarangController::class, 'create']);
             Route::post('/', [BarangController::class, 'store']);
             Route::get('/create_ajax', [BarangController::class, 'create_ajax']);
             Route::post('/ajax', [BarangController::class, 'store_ajax']);
+            Route::get('/import', [BarangController::class, 'import']);
+            Route::post('/import_ajax', [BarangController::class, 'import_ajax']);
             Route::get('/{id}', [BarangController::class, 'show']);
             Route::get('/{id}/edit', [BarangController::class, 'edit']);
             Route::put('/{id}', [BarangController::class, 'update']);
@@ -114,6 +122,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{id}', [BarangController::class, 'destroy']);
         });
     });
+
     Route::middleware(['authorize:ADM,STF,MNG'])->group(function () {
         Route::group(['prefix' => 'supplier'], function () {
             Route::get('/', [SupplierController::class, 'index']);
@@ -122,6 +131,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [SupplierController::class, 'store']);
             Route::get('/create_ajax', [SupplierController::class, 'create_ajax']);
             Route::post('/ajax', [SupplierController::class, 'store_ajax']);
+            Route::get('/import', [SupplierController::class, 'import']);
+            Route::post('/import_ajax', [SupplierController::class, 'import']);
             Route::get('/{id}', [SupplierController::class, 'show']);
             Route::get('/{id}/edit', [SupplierController::class, 'edit']);
             Route::put('/{id}', [SupplierController::class, 'update']);
@@ -130,11 +141,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{id}/delete_ajax', [SupplierController::class, 'confirm_ajax']);
             Route::delete('/{id}/delete_ajax', [SupplierController::class, 'delete_ajax']);
             Route::delete('/{id}', [SupplierController::class, 'destroy']);
-
             Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         });
     });
 });
+
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/post-login', [AuthController::class, 'postlogin'])->name('post-login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
