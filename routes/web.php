@@ -29,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
 
     // js 5 baru ini 
     Route::get('/', [WelcomeController::class, 'index']);
-    Route::middleware(['authorize:ADM'])->group(function () {
+    Route::middleware(['authorize:ADM,MNG'])->group(function () {
         Route::group(['prefix' => 'user'], function () {
             Route::get('/', [UserController::class, 'index']);
             Route::post('/list', [UserController::class, 'list']);
