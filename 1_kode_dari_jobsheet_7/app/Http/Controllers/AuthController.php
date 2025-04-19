@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LevelModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,6 +14,14 @@ class AuthController extends Controller
             return redirect('/');
         }
         return view('auth.login');
+    }
+    public function register()
+    {
+        if (Auth::check()) { // jika sudah login, maka redirect ke halaman home
+            return redirect('/');
+        }
+        $level = LevelModel::where('level_id', '>=', 3)->get();
+        return view('auth.register',compact('level'));
     }
 
     public function postlogin(Request $request)

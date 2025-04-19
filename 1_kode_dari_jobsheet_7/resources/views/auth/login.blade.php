@@ -1,4 +1,4 @@
-p<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -60,6 +60,13 @@ p<!DOCTYPE html>
                         </div>
                         <!-- /.col -->
                     </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <a href="/register" class="btn btn-secondary btn-block">Register</a>
+                        </div>
+                    </div>
+
+
                 </form>
             </div>
             <!-- /.card-body -->
