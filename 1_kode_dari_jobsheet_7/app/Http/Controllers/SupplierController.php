@@ -7,6 +7,7 @@ use App\Models\SupplierModel;
 use Yajra\DataTables\DataTables;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class SupplierController extends Controller
 {
@@ -251,7 +252,7 @@ class SupplierController extends Controller
     {
         return view('supplier.import');
     }
-   
+
     public function import_ajax(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -306,5 +307,45 @@ class SupplierController extends Controller
         }
 
         return redirect('/');
+    }
+    public function export_excel()
+    {
+        $supplier = SupplierModel::select('id', 'kode_supplier', 'nama_supplier', 'telepon', 'alamat')->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode Supplier');
+        $sheet->setCellValue('C1', 'Nama Supplier');
+        $sheet->setCellValue('D1', 'Telepon');
+        $sheet->setCellValue('E1', 'Alamat');
+
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+
+        $no = 1;
+        $baris = 2;
+
+        foreach ($supplier as $value) {
+            $sheet->setCellValue('A' . $baris, $no++);
+            $sheet->setCellValue('B' . $baris, $value->kode_supplier);
+            $sheet->setCellValue('C' . $baris, $value->nama_supplier);
+            $sheet->setCellValue('D' . $baris, $value->telepon ?? '-');
+            $sheet->setCellValue('E' . $baris, $value->alamat ?? '-');
+            $baris++;
+        }
+
+        foreach (range('A', 'E') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Supplier');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Supplier ' . date('Y-m-d H:i:s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        exit;
     }
 }
