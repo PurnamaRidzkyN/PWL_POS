@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SupplierModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Yajra\DataTables\DataTables;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Validator;
@@ -348,4 +349,15 @@ class SupplierController extends Controller
         $writer->save('php://output');
         exit;
     }
+    public function export_pdf()
+{
+    $supplier = SupplierModel::select('kode_supplier', 'nama_supplier', 'telepon', 'alamat')
+        ->orderBy('kode_supplier')
+        ->get();
+
+    $pdf = Pdf::loadView('supplier.export_pdf', ['supplier' => $supplier]);
+    $pdf->setPaper('a4', 'portrait');
+    return $pdf->stream('Data Supplier ' . date('Y-m-d H:i:s') . '.pdf');
+}
+
 }

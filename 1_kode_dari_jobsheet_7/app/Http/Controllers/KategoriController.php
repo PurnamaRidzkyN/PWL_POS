@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\KategoriModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Yajra\DataTables\DataTables;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Validator;
@@ -332,4 +333,15 @@ class KategoriController extends Controller
         $writer->save('php://output');
         exit;
     }
+    public function export_pdf()
+{
+    $kategori = KategoriModel::select('kategori_kode', 'kategori_nama')
+        ->orderBy('kategori_kode')
+        ->get();
+
+    $pdf = Pdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
+    $pdf->setPaper('a4', 'portrait');
+    return $pdf->stream('Data Kategori ' . date('Y-m-d H:i:s') . '.pdf');
+}
+
 }

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserModel;
 use App\Models\LevelModel;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -400,5 +401,16 @@ class UserController extends Controller
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
         exit;
+    }
+    public function export_pdf()
+    {
+        $user = UserModel::select('username', 'nama', 'level_id')
+            ->with('level')
+            ->orderBy('username')
+            ->get();
+
+        $pdf = Pdf::loadView('user.export_pdf', ['user' => $user]);
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->stream('Data User ' . date('Y-m-d H:i:s') . '.pdf');
     }
 }
