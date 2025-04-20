@@ -31,6 +31,8 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign('level_id')->references('level_id')->on('m_level');
         });
+
+        
     }
 
     /**
@@ -42,5 +44,9 @@ return new class extends Migration
             //
         });
         Schema::dropIfExists('useri');
+
+        Schema::table('m_user', function (Blueprint $table) {
+            $table->dropColumn('foto_profil');
+        });
     }
 };

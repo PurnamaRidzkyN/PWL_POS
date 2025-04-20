@@ -42,6 +42,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Foto</th>
                         <th>Username</th>
                         <th>Nama</th>
                         <th>Level Pengguna</th>
@@ -52,7 +53,8 @@
         </div>
     </div>
     <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
-        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
+        data-keyboard="false" data-width="75%">
+    </div>
 @endsection
 
 @push('css')
@@ -60,15 +62,27 @@
 
 @push('js')
     <script>
+        var assetStorageUrl = @json(asset('storage/foto_user'));
+        var assetDefaultImage = @json(asset('images/default.png'));
+
         function modalAction(url = '') {
             $('#myModal').load(url, function() {
                 $('#myModal').modal('show');
             });
+            $('#myModal').on('show.bs.modal', function() {
+                $('.main-content').attr('aria-hidden', 'true');
+            });
+            $('#myModal').on('hide.bs.modal', function() {
+                $('.main-content').removeAttr('aria-hidden');
+            });
+
         }
+
         $(document).ready(function() {
             var dataUser = $('#table_user').DataTable({
                 // serverSide: true, jika ingin menggunakan server side processing
                 serverSide: true,
+
                 ajax: {
                     "url": "{{ url('user/list') }}",
                     "dataType": "json",
@@ -84,11 +98,22 @@
                     orderable: false,
                     searchable: false
                 }, {
+                    data: "foto_profil",
+                    className: "text-center",
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        // Menggunakan assetStorageUrl dan assetDefaultImage
+                        if (data) {
+                            return `<img src="${assetStorageUrl}/${data}" class="img-thumbnail" style="height:50px;width:50px;">`;
+                        } else {
+                            return `<img src="${assetDefaultImage}" class="img-thumbnail" style="height:50px;width:50px;">`;
+                        }
+                    }
+                }, {
                     data: "username",
                     className: "",
-                    // orderable: true, jika ingin kolom ini bisa diurutkan
                     orderable: true,
-                    // searchable: true, jika ingin kolom ini bisa dicari
                     searchable: true
                 }, {
                     data: "nama",
@@ -96,7 +121,6 @@
                     orderable: true,
                     searchable: true
                 }, {
-                    // mengambil data level hasil dari ORM berelasi
                     data: "level.level_nama",
                     className: "",
                     orderable: false,
@@ -112,7 +136,6 @@
             $('#level_id').on('change', function() {
                 dataUser.ajax.reload();
             });
-
         });
     </script>
 @endpush

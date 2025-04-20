@@ -33,13 +33,27 @@
                         <th>Password</th>
                         <td>********</td>
                     </tr>
+                    <tr>
+                        <th>Foto Profil</th>
+                        <td>
+                            @if ($user->foto_profil)
+                                <img src="{{ asset('storage/foto_user/' . $user->foto_profil) }}" class="img-thumbnail"
+                                    style="height:100px;width:100px;">
+                            @else
+                                <img src="{{ asset('images/default.png') }}" class="img-thumbnail"
+                                    style="height:100px;width:100px;">
+                            @endif
+                        </td>
+                    </tr>
                 </table>
             @endempty
             <a href="{{ url('user') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
         </div>
     </div>
 @endsection
+
 @push('css')
 @endpush
+
 @push('js')
 @endpush

@@ -1,4 +1,12 @@
 <div class="sidebar">
+    <div class="user-profile text-center py-3">
+        <a href="{{ url('/profile') }}" class="d-block {{ $activeMenu === 'profile' ? 'active' : '' }}">
+            <img src="{{ Auth::user()->foto_profil ? asset('storage/foto_user/' . Auth::user()->foto_profil) : asset('profile.png') }}"
+                alt="User Image" class="img-circle elevation-2" style="width: 60px; height: 60px; object-fit: cover;">
+            <p class="mt-2 mb-0 text-white">{{ Auth::user()->nama }}</p>
+        </a>
+    </div>
+
     <!-- SidebarSearch Form -->
     <div class="form-inline mt-2">
         <div class="input-group" data-widget="sidebar-search">

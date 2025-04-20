@@ -1,49 +1,57 @@
-<form action="{{ url('/user/ajax') }}" method="POST" id="form-tambah">
+<form action="{{ url('/user/ajax') }}" method="POST" id="form-tambah" enctype="multipart/form-data">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                </div>
+                <h5 class="modal-title">Tambah Data User</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                    aria-label="Close"><span>&times;</span></button>
+            </div>
             <div class="modal-body">
+                <!-- Level -->
                 <div class="form-group">
                     <label>Level Pengguna</label>
-                    <select name="level_id" id="level_id" class="form-control" required>
+                    <select name="level_id" class="form-control" required>
                         <option value="">- Pilih Level -</option>
                         @foreach ($level as $l)
                             <option value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
                         @endforeach
-                        </select>
-                    <small id="error-level_id" class="error-text form-text text-danger"></small>
-                    </div>
+                    </select>
+                    <small id="error-level_id" class="error-text text-danger"></small>
+                </div>
+                <!-- Username -->
                 <div class="form-group">
                     <label>Username</label>
-                    <input value="" type="text" name="username" id="username"
-                        class="form-control" required>
-                    <small id="error-username" class="error-text form-text text-danger"></small>
-                    </div>
+                    <input type="text" name="username" class="form-control" required>
+                    <small id="error-username" class="error-text text-danger"></small>
+                </div>
+                <!-- Nama -->
                 <div class="form-group">
                     <label>Nama</label>
-                    <input value="" type="text" name="nama" id="nama"
-                        class="form-control" required>
-                    <small id="error-nama" class="error-text form-text text-danger"></small>
-                    </div>
+                    <input type="text" name="nama" class="form-control" required>
+                    <small id="error-nama" class="error-text text-danger"></small>
+                </div>
+                <!-- Password -->
                 <div class="form-group">
                     <label>Password</label>
-                    <input value="" type="password" name="password" id="password"
-                        class="form-control" required>
-                    <small id="error-password" class="error-text form-text text-danger"></small>
-                    </div>
+                    <input type="password" name="password" class="form-control" required>
+                    <small id="error-password" class="error-text text-danger"></small>
                 </div>
+                <!-- Foto Profil -->
+                <div class="form-group">
+                    <label>Foto Profil</label>
+                    <input type="file" name="foto_profil" accept="image/*" class="form-control">
+                    <small id="error-foto_profil" class="error-text text-danger"></small>
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
             </div>
+        </div>
     </div>
 </form>
+
 <script>
     $(document).ready(function() {
         $("#form-tambah").validate({
@@ -69,10 +77,14 @@
                 }
             },
             submitHandler: function(form) {
+                var formData = new FormData(form);
+
                 $.ajax({
                     url: form.action,
                     type: form.method,
-                    data: $(form).serialize(),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function(response) {
                         if (response.status) {
                             $('#myModal').modal('hide');
@@ -95,6 +107,7 @@
                         }
                     }
                 });
+
                 return false;
             },
             errorElement: 'span',

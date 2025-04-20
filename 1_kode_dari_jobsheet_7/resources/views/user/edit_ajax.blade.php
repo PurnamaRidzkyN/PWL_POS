@@ -2,9 +2,8 @@
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title">Kesalahan</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger">
@@ -14,18 +13,17 @@
                 <a href="{{ url('/user') }}" class="btn btn-warning">Kembali</a>
             </div>
         </div>
-
     </div>
 @else
-    <form action="{{ url('/user/' . $user->user_id . '/update_ajax') }}" method="POST" id="form-edit">
+    <form action="{{ url('/user/' . $user->user_id . '/update_ajax') }}" method="POST" id="form-edit"
+        enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Data User</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title">Edit Data User</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -37,41 +35,53 @@
                                     {{ $l->level_nama }}</option>
                             @endforeach
                         </select>
-                        <small id="error-level_id" class="error-text form-text text-danger"></small>
+                        <small id="error-level_id" class="error-text text-danger"></small>
                     </div>
+
                     <div class="form-group">
                         <label>Username</label>
                         <input value="{{ $user->username }}" type="text" name="username" id="username"
                             class="form-control" required>
-                        <small id="error-username" class="error-text form-text text-danger"></small>
+                        <small id="error-username" class="error-text text-danger"></small>
                     </div>
+
                     <div class="form-group">
                         <label>Nama</label>
                         <input value="{{ $user->nama }}" type="text" name="nama" id="nama" class="form-control"
                             required>
-                        <small id="error-nama" class="error-text form-text text-danger"></small>
+                        <small id="error-nama" class="error-text text-danger"></small>
                     </div>
+
                     <div class="form-group">
                         <label>Password</label>
-                        <input value="" type="password" name="password" id="password" class="form-control">
-                        <small class="form-text text-muted">Abaikan jika tidak ingin ubah
-                            password</small>
-                        <small id="error-password" class="error-text form-text text-danger"></small>
+                        <input type="password" name="password" id="password" class="form-control">
+                        <small class="form-text text-muted">Abaikan jika tidak ingin ubah password</small>
+                        <small id="error-password" class="error-text text-danger"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Foto Profil</label>
+                        <input type="file" name="foto_profil" id="foto_profil" class="form-control">
+                        <small id="error-foto" class="error-text text-danger"></small>
+
+                        @if ($user->foto_profil)
+                            <div class="mt-2">
+                                <p>Foto Saat Ini:</p>
+                                <img src="{{ asset('storage/foto_user/' . $user->foto_profil) }}" width="100" alt="Foto Profil">
+                            </div>
+                        @endif
                     </div>
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-
-warning">Batal</button>
+                    <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
-
                 </div>
-
             </div>
-
         </div>
-
     </form>
 
+    {{-- Validasi + Submit AJAX --}}
     <script>
         $(document).ready(function() {
             $("#form-edit").validate({
@@ -93,13 +103,20 @@ warning">Batal</button>
                     password: {
                         minlength: 6,
                         maxlength: 20
+                    },
+                    foto_profil: {
+                        extension: "jpg|jpeg|png|webp"
                     }
                 },
                 submitHandler: function(form) {
+                    var formData = new FormData(form);
+
                     $.ajax({
                         url: form.action,
                         type: form.method,
-                        data: $(form).serialize(),
+                        data: formData,
+                        processData: false,
+                        contentType: false,
                         success: function(response) {
                             if (response.status) {
                                 $('#myModal').modal('hide');
@@ -129,10 +146,10 @@ warning">Batal</button>
                     error.addClass('invalid-feedback');
                     element.closest('.form-group').append(error);
                 },
-                highlight: function(element, errorClass, validClass) {
+                highlight: function(element) {
                     $(element).addClass('is-invalid');
                 },
-                unhighlight: function(element, errorClass, validClass) {
+                unhighlight: function(element) {
                     $(element).removeClass('is-invalid');
                 }
             });

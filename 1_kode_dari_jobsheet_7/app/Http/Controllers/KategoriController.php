@@ -35,7 +35,7 @@ class KategoriController extends Controller
         return DataTables::of($kategori)
             ->addIndexColumn()
             ->addColumn('aksi', function ($kategori) {
-                $btn  = '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn  = '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/kategori/' . $kategori->kategori_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
@@ -334,14 +334,13 @@ class KategoriController extends Controller
         exit;
     }
     public function export_pdf()
-{
-    $kategori = KategoriModel::select('kategori_kode', 'kategori_nama')
-        ->orderBy('kategori_kode')
-        ->get();
+    {
+        $kategori = KategoriModel::select('kategori_kode', 'kategori_nama')
+            ->orderBy('kategori_kode')
+            ->get();
 
-    $pdf = Pdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
-    $pdf->setPaper('a4', 'portrait');
-    return $pdf->stream('Data Kategori ' . date('Y-m-d H:i:s') . '.pdf');
-}
-
+        $pdf = Pdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->stream('Data Kategori ' . date('Y-m-d H:i:s') . '.pdf');
+    }
 }
