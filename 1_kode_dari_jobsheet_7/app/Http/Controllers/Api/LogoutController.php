@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
+
+class LogoutController extends Controller
+{
+    public function __invoke(){
+        $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
+    if($removeToken){
+        return response()->json([
+            'success' => 'true', 
+            'message' => 'Logout Success'
+        ], 200);
+    }
+    }
+}
